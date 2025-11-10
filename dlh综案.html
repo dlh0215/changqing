@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人案例</title>
+</head>
+
+<body>
+    <div style="background-color: #cb0058; color: white; padding: 50px 20px; text-align: center;">
+  <h1>小白进部</h1>
+  <h2>fist feet</h2>
+  <p style="font-size: 18px; margin-top: 20px;">成功男人</p >
+</div>
+    <h1>董粮辉</h1>
+    <hr>
+    <p>我是渣渣辉<a href="https://raw.githubusercontent.com/dlh0215/changqing/main/李荣浩 - 不将就.mp3">不将就</a> </p>
+    <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/dlhzp.jpg" width="200" title="董粮辉">
+    <h2>学习经历</h2>
+    <p>毕业于热血高校</p>
+    <h2>My 宝贝</h2>
+    <video src="https://raw.githubusercontent.com/dlh0215/changqing/main/dlhbb.mp4" controls loop width="300"></video>
+    <P><a href="https://raw.githubusercontent.com/dlh0215/changqing/main/ls.jpg">零食王国</a></P>
+    <h2>学姐</h2>
+    <p><img src="https://raw.githubusercontent.com/dlh0215/changqing/main/xj.jpg" width="200" title="人机学姐"></p>
+    <h2>学长</h2>
+    <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/xz.jpg" width="200">
+    <p style="color: red;">我的心是红色</p>
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>动态心跳曲线</title>
+        <style>
+            canvas {
+                border: 1px solid #eee;
+                display: block;
+                margin: 50px auto;
+                background: #f9f9f9;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="heartCanvas" width="500" height="500"></canvas>
+
+        <script>
+            const canvas = document.getElementById('heartCanvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2 + 30;
+            let scale = 80; // 基础缩放比例
+            let isBeating = true; // 心跳状态
+            let beatTimer = 0; // 心跳计时器
+
+            // 绘制心形的核心函数
+            function drawHeart() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空画布（关键：避免残影）
+                ctx.beginPath();
+
+                // 心形参数方程
+                for (let t = 0; t < Math.PI * 2; t += 0.01) {
+                    const x = 16 * Math.sin(t) ** 3;
+                    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+                    const drawX = centerX + x * scale;
+                    const drawY = centerY - y * scale;
+
+                    t === 0 ? ctx.moveTo(drawX, drawY) : ctx.lineTo(drawX, drawY);
+                }
+
+                // 动态颜色（心跳时变浅红，恢复时深红）
+                const fillColor = isBeating ? 'rgba(255, 40, 80, 0.9)' : 'rgba(200, 20, 60, 0.9)';
+                const strokeColor = isBeating ? 'darkred' : 'rgb(150, 10, 40)';
+
+                ctx.fillStyle = fillColor;
+                ctx.strokeStyle = strokeColor;
+                ctx.lineWidth = 2;
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // 心跳动画逻辑（缩放+状态切换）
+            function animateHeart() {
+                beatTimer++;
+                // 心跳节奏：每60帧（约1秒）跳动一次，缩放从80→95→80
+                if (beatTimer < 15) {
+                    scale += 1; // 收缩→扩张（15帧放大到95）
+                    isBeating = true;
+                } else if (beatTimer < 30) {
+                    scale -= 1; // 扩张→收缩（15帧缩小到80）
+                    isBeating = false;
+                } else {
+                    beatTimer = 0; // 重置计时器，循环心跳
+                }
+
+                drawHeart(); // 每次动画更新时重绘心形
+                requestAnimationFrame(animateHeart); // 浏览器帧同步（流畅动画核心）
+            }
+
+            // 启动动画
+            animateHeart();
+        </script>
+        <h1>到这结束</h1>
+    </body>
+
+    </html>
