@@ -1,176 +1,289 @@
 <!DOCTYPE html>
- <html lang="zh-CN">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>基础购物页面</title>
-     <style>
-         * {margin: 0; padding: 0; box-sizing: border-box;}
-         /* 头部 */
-         .header {
-             height: 60px;
-             background: #333;
-             color: #fff;
-             line-height: 60px;
-             padding: 0 20px;
-             display: flex;
-             justify-content: space-between;
-         }
-         .logo {font-size: 20px; font-weight: bold;}
-         .nav a {color: #fff; text-decoration: none; margin: 0 15px;}
-         .cart-btn {cursor: pointer;}
-         /* 商品区 */
-         .goods-container {padding: 30px 20px;}
-         .goods-list {display: flex; flex-wrap: wrap; gap: 30px;}
-         .goods-item {
-             width: 250px;
-             border: 1px solid #eee;
-             padding: 20px;
-             text-align: center;
-         }
-         .goods-img {width: 200px; height: 200px; margin: 0 auto 15px;}
-         .goods-price {color: red; font-weight: bold; margin: 10px 0;}
-         .add-cart {
-             padding: 8px 20px;
-             background: #ff4400;
-             color: #fff;
-             border: none;
-             cursor: pointer;
-         }
-         /* 购物车弹窗 */
-         .cart-modal {
-             position: fixed;
-             top: 0;
-             right: 0;
-             width: 350px;
-             height: 100%;
-             background: #fff;
-             border-left: 1px solid #eee;
-             transform: translateX(100%);
-             transition: 0.3s;
-         }
-         .cart-modal.show {transform: translateX(0);}
-         .cart-title {
-             height: 60px;
-             line-height: 60px;
-             padding: 0 20px;
-             border-bottom: 1px solid #eee;
-             font-weight: bold;
-         }
-         .cart-list {
-             padding: 20px;
-             height: calc(100% - 120px);
-             overflow-y: auto;
-         }
-         .cart-empty {
-             text-align: center;
-             color: #999;
-             padding: 50px 0;
-         }
-         .close-cart {
-             position: absolute;
-             bottom: 20px;
-             left: 50%;
-             transform: translateX(-50%);
-             padding: 8px 30px;
-             background: #333;
-             color: #fff;
-             border: none;
-             cursor: pointer;
-         }
-         /* 底部 */
-         .footer {
-             height: 80px;
-             background: #333;
-             color: #fff;
-             text-align: center;
-             line-height: 80px;
-             margin-top: 50px;
-         }
-     </style>
- </head>
- <body>
-     <!-- 头部导航 -->
-     <header class="header">
-         <div class="logo">购物商城</div>
-         <nav class="nav">
-             <a href=" ">首页</a >
-             <a href="#">商品分类</a >
-             <a href="javascript:showOrder()">我的订单</a >
-             <a href="#">关于我们</a >
-         </nav>
-         <div class="cart-btn" onclick="showCart()">购物车(0)</div>
-     </header>
-     <!-- 商品列表 -->
-     <section class="goods-container">
-         <h2>热门商品</h2>
-         <div class="goods-list">
-             <!-- 商品1：替换src为你的图片链接 -->
-             <div class="goods-item">
-                 <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/ls.jpg" alt="商品1">
-                 <h3>商品名称1</h3>
-                 <div class="goods-price">¥99.00</div>
-                 <button class="add-cart" onclick="addCart(1)">加入购物车</button>
-             </div>
-             <!-- 商品2：替换src为你的图片链接 -->
-             <div class="goods-item">
-                 <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/xj.jpg" alt="商品2">
-                 <h3>商品名称2</h3>
-                 <div class="goods-price">¥159.00</div>
-                 <button class="add-cart" onclick="addCart(2)">加入购物车</button>
-             </div>
-             <!-- 商品3：替换src为你的图片链接 -->
-             <div class="goods-item">
-                 <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/e2ac9eca862cbb786818430577bce7ba.jpg" alt="商品3">
-                 <h3>商品名称3</h3>
-                 <div class="goods-price">¥299.00</div>
-                 <button class="add-cart" onclick="addCart(3)">加入购物车</button>
-             </div>
-         </div>
-     </section>
-     <!-- 购物车弹窗 -->
-     <div class="cart-modal" id="cartModal">
-         <div class="cart-title">我的购物车</div>
-         <div class="cart-list" id="cartList">
-             <div class="cart-empty">购物车为空</div>
-         </div>
-         <button class="close-cart" onclick="hideCart()">关闭购物车</button>
-     </div>
-     <!-- 订单弹窗 -->
-     <div class="cart-modal" id="orderModal" style="display: none;">
-         <div class="cart-title">我的订单</div>
-         <div class="cart-list">
-             <div class="cart-empty">暂无订单</div>
-         </div>
-         <button class="close-cart" onclick="document.getElementById('orderModal').style.display='none'">关闭订单</button>
-     </div>
-     <!-- 底部 -->
-     <footer class="footer">购物商城 © 2025 版权所有</footer>
-     <script>
-         let cartData = [];
-         function showCart() {
-             document.getElementById('cartModal').classList.add('show');
-             renderCart();
-         }
-         function hideCart() {
-             document.getElementById('cartModal').classList.remove('show');
-         }
-         function showOrder() {
-             document.getElementById('orderModal').style.display = 'block';
-         }
-         function addCart(id) {
-             const goods = {id, name: `商品名称${id}`, price: id===1?99:id===2?159:299};
-             cartData.push(goods);
-             document.querySelector('.cart-btn').innerText = `购物车(${cartData.length})`;
-             alert('添加成功');
-         }
-         function renderCart() {
-             const list = document.getElementById('cartList');
-             if (cartData.length === 0) {
-                 list.innerHTML = '<div class="cart-empty">购物车为空</div>';
-                 return;
-             }list.innerHTML = cartData.map(g => `<div style="padding:10px 0; border-bottom:1px solid #eee;">${g.name} - ¥${g.price}</div>`).join('');
-         }
-     </script>
- </body>
- </html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基础购物页面</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        /* 头部 */
+        .header {
+            height: 60px;
+            background: #333;
+            color: #fff;
+            line-height: 60px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {font-size: 20px; font-weight: bold;}
+        .nav a {color: #fff; text-decoration: none; margin: 0 15px;}
+        .cart-btn {cursor: pointer;}
+        /* 商品区 */
+        .goods-container {padding: 30px 20px;}
+        .goods-container h2 {margin-bottom: 20px;}
+        .goods-list {display: flex; flex-wrap: wrap; gap: 30px;}
+        .goods-item {
+            width: 250px;
+            border: 1px solid #eee;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            transition: box-shadow 0.3s;
+        }
+        .goods-item:hover {box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+        .goods-img {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px;
+            object-fit: cover; /* 图片自适应 */
+            border-radius: 4px;
+        }
+        .goods-price {color: red; font-weight: bold; margin: 10px 0;}
+        .add-cart {
+            padding: 8px 20px;
+            background: #ff4400;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .add-cart:hover {background: #e03c00;}
+        /* 购物车/订单弹窗 */
+        .modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            background: #fff;
+            border-left: 1px solid #eee;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 999;
+        }
+        .modal.show {transform: translateX(0);}
+        .modal-title {
+            height: 60px;
+            line-height: 60px;
+            padding: 0 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #999;
+        }
+        .modal-list {
+            padding: 20px;
+            height: calc(100% - 120px);
+            overflow-y: auto;
+        }
+        .modal-empty {
+            text-align: center;
+            color: #999;
+            padding: 50px 0;
+        }
+        .modal-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            padding: 0 20px;
+        }
+        .modal-confirm-btn {
+            width: 100%;
+            padding: 8px 0;
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        /* 底部 */
+        .footer {
+            height: 80px;
+            background: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 80px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="logo">购物商城</div>
+        <nav class="nav">
+            <a href="#">首页</a>
+            <a href="#">商品分类</a>
+            <a href="javascript:showOrder()">我的订单</a>
+            <a href="#">关于我们</a>
+        </nav>
+        <div class="cart-btn" onclick="showCart()">购物车(0)</div>
+    </header>
+    <!-- 商品列表 -->
+    <section class="goods-container">
+        <h2>热门商品</h2>
+        <div class="goods-list">
+            <!-- 商品1 -->
+            <div class="goods-item">
+                <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/html.jpg" alt="商品1" class="goods-img">
+                <h3>商品名称1</h3>
+                <div class="goods-price">¥99.00</div>
+                <button class="add-cart" onclick="addCart(1)">加入购物车</button>
+            </div>
+            <!-- 商品2 -->
+            <div class="goods-item">
+                <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/cs.jpg" alt="商品2" class="goods-img">
+                <h3>商品名称2</h3>
+                <div class="goods-price">¥159.00</div>
+                <button class="add-cart" onclick="addCart(2)">加入购物车</button>
+            </div>
+            <!-- 商品3 -->
+            <div class="goods-item">
+                <img src="https://raw.githubusercontent.com/dlh0215/changqing/main/js.jpg" alt="商品3" class="goods-img">
+                <h3>商品名称3</h3>
+                <div class="goods-price">¥299.00</div>
+                <button class="add-cart" onclick="addCart(3)">加入购物车</button>
+            </div>
+        </div>
+    </section>
+    <!-- 购物车弹窗 -->
+    <div class="modal" id="cartModal">
+        <div class="modal-title">
+            我的购物车
+            <button class="modal-close-btn" onclick="hideCart()">×</button>
+        </div>
+        <div class="modal-list" id="cartList">
+            <div class="modal-empty">购物车为空</div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-confirm-btn" onclick="submitOrder()">结算</button>
+        </div>
+    </div>
+    <!-- 订单弹窗 -->
+    <div class="modal" id="orderModal">
+        <div class="modal-title">
+            我的订单
+            <button class="modal-close-btn" onclick="hideOrder()">×</button>
+        </div>
+        <div class="modal-list" id="orderList">
+            <div class="modal-empty">暂无订单</div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-confirm-btn" onclick="hideOrder()">关闭</button>
+        </div>
+    </div>
+    <!-- 底部 -->
+    <footer class="footer">购物商城 © 2025 版权所有</footer>
+    <script>
+        let cartData = [];
+        let orderData = [];
+
+        // 显示购物车
+        function showCart() {
+            document.getElementById('cartModal').classList.add('show');
+            renderCart();
+        }
+        // 隐藏购物车
+        function hideCart() {
+            document.getElementById('cartModal').classList.remove('show');
+        }
+        // 显示订单
+        function showOrder() {
+            document.getElementById('orderModal').classList.add('show');
+            renderOrder();
+        }
+        // 隐藏订单
+        function hideOrder() {
+            document.getElementById('orderModal').classList.remove('show');
+        }
+        // 添加商品到购物车（支持同一商品数量叠加）
+        function addCart(id) {
+            const goods = {
+                id,
+                name: `商品名称${id}`,
+                price: id === 1 ? 99 : id === 2 ? 159 : 299,
+                count: 1
+            };
+            // 检查是否已存在该商品，存在则数量+1
+            const existGoods = cartData.find(item => item.id === id);
+            if (existGoods) {
+                existGoods.count++;
+            } else {
+                cartData.push(goods);
+            }
+            // 更新购物车按钮显示
+            const totalCount = cartData.reduce((sum, item) => sum + item.count, 0);
+            document.querySelector('.cart-btn').innerText = `购物车(${totalCount})`;
+            alert('添加成功');
+        }
+        // 渲染购物车
+        function renderCart() {
+            const list = document.getElementById('cartList');
+            if (cartData.length === 0) {
+                list.innerHTML = '<div class="modal-empty">购物车为空</div>';
+                return;
+            }
+            // 渲染商品（带数量）
+            list.innerHTML = cartData.map(g => `
+                <div style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                    <span>${g.name} ×${g.count}</span>
+                    <span>¥${g.price * g.count}</span>
+                </div>
+            `).join('');
+        }
+        // 提交订单
+        function submitOrder() {
+            if (cartData.length === 0) {
+                alert('购物车为空，无法结算');
+                return;
+            }
+            // 计算订单总价
+            const totalPrice = cartData.reduce((sum, item) => sum + (item.price * item.count), 0);
+            // 添加到订单
+            orderData.push({
+                id: Date.now(), // 用时间戳作为订单ID
+                goods: [...cartData],
+                total: totalPrice,
+                time: new Date().toLocaleString()
+            });
+            // 清空购物车
+            cartData = [];
+            document.querySelector('.cart-btn').innerText = '购物车(0)';
+            hideCart();
+            alert('订单提交成功！');
+            // 刷新订单列表
+            renderOrder();
+        }
+        // 渲染订单
+        function renderOrder() {
+            const list = document.getElementById('orderList');
+            if (orderData.length === 0) {
+                list.innerHTML = '<div class="modal-empty">暂无订单</div>';
+                return;
+            }
+            list.innerHTML = orderData.map(order => `
+                <div style="padding:15px 0; border-bottom:1px solid #eee;">
+                    <div style="font-weight:bold; margin-bottom:10px;">订单${order.id}</div>
+                    <div style="font-size:12px; color:#999; margin-bottom:10px;">${order.time}</div>
+                    ${order.goods.map(g => `
+                        <div style="padding:5px 0; font-size:14px;">${g.name} ×${g.count} - ¥${g.price * g.count}</div>
+                    `).join('')}
+                    <div style="margin-top:10px; font-weight:bold;">总计：¥${order.total}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
